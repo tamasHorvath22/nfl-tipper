@@ -24,8 +24,8 @@ public class IndexController extends AbstractController {
         HttpSession session = getHttpSession();
         if(session.getAttribute("loggedInUser") != null) {
             User user = (User) session.getAttribute("loggedInUser");
-            Set<League> userLeagueList = userService.getUserLeagues(user.getUsername());
-            model.addAttribute("userLeagues", userLeagueList);
+//            Set<League> userLeagueList = userService.getUserLeagues(user.getUsername());
+//            model.addAttribute("userLeagues", userLeagueList);
             return "index";
         }
         return "redirect:/login";

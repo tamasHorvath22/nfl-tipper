@@ -14,8 +14,8 @@ public class League {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "leagueList")
-    private Set<User> memberList = new HashSet<>();
+//    @ManyToMany(mappedBy = "leagueList")
+//    private Set<User> memberList = new HashSet<>();
 
     public League(String name) {
         this.name = name;
@@ -31,7 +31,7 @@ public class League {
         return name;
     }
 
-    public Set<User> getMemberList() {
-        return memberList;
-    }
+//    public Set<User> getMemberList() {
+//        return memberList;
+//    }
 }
