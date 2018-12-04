@@ -17,7 +17,8 @@ public class UserMapper {
     }
 
     public static User toEntity(UserDTO userDTO) {
-        return modelMapper().map(userDTO, User.class);
+        User user = modelMapper().map(userDTO, User.class);
+        return user;
     }
 
 }

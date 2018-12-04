@@ -2,5 +2,6 @@ package com.codecool.common;
 
 public enum ErrorCode {
 
-    USER_ALREADY_EXISTS
+    USERNAME_ALREADY_EXISTS,
+    EMAIL_ALREADY_EXIST
 }

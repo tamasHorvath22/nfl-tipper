@@ -26,6 +26,8 @@ public class UserService {
         return new BCryptPasswordEncoder();
     }
 
+    private final String UNIQUE_USERNAME_CONSTRAINT = "users_username_unique";
+
 //    @GetMapping
 //    public User getUser(@PathVariable int id) {
 //        return usermanager.findUserById(id);
@@ -41,14 +43,33 @@ public class UserService {
         try {
             User user = UserMapper.toEntity(userDTO);
             user.setPassword(passwordEncoder().encode(userDTO.getPassword()));
-            User userr = usermanager.createUser(user);
-            return UserMapper.toDto(userr);
+            return UserMapper.toDto(usermanager.createUser(user));
         } catch(DataIntegrityViolationException e) {
-            String cucc = e.getMostSpecificCause().getMessage();
-
-            TipperException ex = new TipperException(ErrorCode.USER_ALREADY_EXISTS, ErrorCode.USER_ALREADY_EXISTS.toString());
-            throw ex;
+            throw decideErrorCode(findConstraint(e.getMostSpecificCause().getMessage()));
         }
+    }
+
+    private TipperException decideErrorCode(String constraint) {
+        if(constraint.equals(UNIQUE_USERNAME_CONSTRAINT)) {
+            return new TipperException(ErrorCode.USERNAME_ALREADY_EXISTS, ErrorCode.USERNAME_ALREADY_EXISTS.toString());
+        }
+        return new TipperException(ErrorCode.EMAIL_ALREADY_EXIST, ErrorCode.EMAIL_ALREADY_EXIST.toString());
+    }
+
+    private String findConstraint(String source) {
+        int startIndex = 0;
+        int endIndex = 0;
+        boolean isFirst = true;
+        for (int i = 0; i < source.length(); i++) {
+            if(source.charAt(i) == '"' && isFirst) {
+                startIndex = i + 1;
+                isFirst = false;
+            } else if(source.charAt(i) == '"' && !isFirst) {
+                endIndex = i;
+                break;
+            }
+        }
+        return source.substring(startIndex, endIndex);
     }
 
     @PostMapping(path = "/login", headers="Accept=application/json")
