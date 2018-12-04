@@ -26,8 +26,6 @@ public class UserService {
         return new BCryptPasswordEncoder();
     }
 
-    private final String UNIQUE_USERNAME_CONSTRAINT = "users_username_unique";
-
 //    @GetMapping
 //    public User getUser(@PathVariable int id) {
 //        return usermanager.findUserById(id);
@@ -50,10 +48,12 @@ public class UserService {
     }
 
     private TipperException decideErrorCode(String constraint) {
-        if(constraint.equals(UNIQUE_USERNAME_CONSTRAINT)) {
-            return new TipperException(ErrorCode.USERNAME_ALREADY_EXISTS, ErrorCode.USERNAME_ALREADY_EXISTS.toString());
+        for (ErrorCode errorCode : ErrorCode.values()) {
+            if(errorCode.getConstraint().equals(constraint)) {
+                return new TipperException(errorCode.toString());
+            }
         }
-        return new TipperException(ErrorCode.EMAIL_ALREADY_EXIST, ErrorCode.EMAIL_ALREADY_EXIST.toString());
+        return new TipperException();
     }
 
     private String findConstraint(String source) {
@@ -73,18 +73,12 @@ public class UserService {
     }
 
     @PostMapping(path = "/login", headers="Accept=application/json")
-    public UserDTO login(@RequestBody UserDTO userDTO) throws Exception {
-        User user;
-        try {
-            user = usermanager.findUserByUsername(userDTO.getUsername());
-            if(passwordEncoder().matches(user.getPassword(), userDTO.getPassword())) {
-                return UserMapper.toDto(user);
-            } else {
-                throw new Exception();
-            }
-        } catch (Exception e) {
-            throw new Exception(e);
+    public UserDTO login(@RequestBody UserDTO userDTO) throws TipperException {
+        User user = usermanager.findUserByUsername(userDTO.getUsername());
+        if(user == null || !passwordEncoder().matches(userDTO.getPassword(), user.getPassword())) {
+            throw new TipperException(ErrorCode.WRONG_USERNAME_OR_PASSWORD.toString());
         }
+        return UserMapper.toDto(user);
     }
 
 
