@@ -1,18 +1,5 @@
 package com.codecool.api;
 
-import com.codecool.controller.AbstractController;
-import com.codecool.model.League;
-import com.codecool.model.User;
-import com.codecool.service.LeagueService;
-import com.codecool.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
-
 
 //@RestController
 //public class JoinLeagues extends AbstractController {

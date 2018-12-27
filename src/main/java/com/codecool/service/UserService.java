@@ -4,7 +4,9 @@ import com.codecool.common.ErrorCode;
 import com.codecool.common.UserMapper;
 import com.codecool.dto.UserDTO;
 import com.codecool.exception.TipperException;
+import com.codecool.manager.UserManager;
 import com.codecool.manager.UserManagerInterface;
+import com.codecool.mock.Mock;
 import com.codecool.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("user")
+//@RequestMapping("user")
 public class UserService {
 
     @Autowired
@@ -26,6 +28,9 @@ public class UserService {
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
+    private Mock mock;
+
 //    @GetMapping
 //    public User getUser(@PathVariable int id) {
 //        return usermanager.findUserById(id);
@@ -34,6 +39,11 @@ public class UserService {
     @GetMapping
     public User getUser(@PathVariable String username) {
         return usermanager.findUserByUsername(username);
+    }
+
+    @GetMapping(path = "/init")
+    public void init() {
+        mock.createUsers();
     }
 
     @PostMapping(path = "/register", headers="Accept=application/json")
@@ -81,6 +91,10 @@ public class UserService {
         return UserMapper.toDto(user);
     }
 
+    @GetMapping(path = "/user/{userId}", headers="Accept=application/json")
+    public UserDTO getUserDTOById(@PathVariable("userId") Long userId) {
+        return UserMapper.toDto(usermanager.findUserById(userId));
+    }
 
 //    public List<User> getAllUsers() {
 //        return userRepository.findAll();

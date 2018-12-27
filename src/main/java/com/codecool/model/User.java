@@ -27,8 +27,22 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-//    @ManyToMany
-//    private Set<League> leagueList = new HashSet<>();
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
+    private Set<League> createdLeagues;
+
+    @Override
+    public String toString() {
+        String user = "id: " + this.id + " username: " + this.username;
+        int i = 1;
+        for(League league : this.leagueList) {
+            user += "\nleauge " + i + ": "+ league;
+            i++;
+        }
+        return user;
+    }
+
+    @ManyToMany
+    private Set<League> leagueList = new HashSet<>();
 
     public User(String username, String password, String email) {
         this.username = username;
@@ -66,9 +80,9 @@ public class User {
         this.email = email;
     }
 
-//    public void setLeagueList(Set<League> leagueList) {
-//        this.leagueList = leagueList;
-//    }
+    public void setLeagueList(Set<League> leagueList) {
+        this.leagueList = leagueList;
+    }
 
     public String getUsername() {
         return username;
@@ -83,12 +97,11 @@ public class User {
     }
 
 
-//    public Set<League> getLeagueList() {
-//        return leagueList;
-//    }
-//
-//    public void addToLeagueList(League league) {
-//        leagueList.add(league);
-//        league.getMemberList().add(this);
-//    }
+    public Set<League> getLeagueList() {
+        return leagueList;
+    }
+
+    public void addToLeagueList(League league) {
+        leagueList.add(league);
+    }
 }

@@ -5,6 +5,8 @@ import com.codecool.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UserManager implements UserManagerInterface {
 
@@ -12,7 +14,11 @@ public class UserManager implements UserManagerInterface {
     private UserRepository repository;
 
     @Override
-    public User findUserById(int id) {
+
+    public List<User> findAllUsers() { return repository.findAll(); }
+
+    @Override
+    public User findUserById(Long id) {
         return repository.getOne(id);
     }
 
