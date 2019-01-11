@@ -25,8 +25,8 @@ public class Mock {
         league.setCreator(user);
 
         League league2 = new League("other_league");
-        league.setPrivate(false);
-        league.setCreator(user);
+        league2.setPrivate(false);
+        league2.setCreator(user);
 
         userManager.createUser(user);
         userManager.createUser(user2);
@@ -34,8 +34,10 @@ public class Mock {
         leagueManager.createLeague(league);
         leagueManager.createLeague(league2);
 
-        System.out.println(user);
-        System.out.println(user2);
-        System.out.println(league);
+        user.addToLeagueList(league);
+        user.addToLeagueList(league2);
+
+        userManager.createUser(user);
+
     }
 }

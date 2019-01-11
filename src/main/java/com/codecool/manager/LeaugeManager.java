@@ -5,7 +5,10 @@ import com.codecool.repository.LeagueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class LeaugeManager implements LeaugeManagerInterface {
@@ -14,7 +17,7 @@ public class LeaugeManager implements LeaugeManagerInterface {
     private LeagueRepository repository;
 
     @Override
-    public League findLeaugeById(Long id) { return repository.getOne(id); }
+    public League findLeagueById(Long id) { return repository.getOne(id); }
 
     @Override
     public League createLeague(League league) {
@@ -25,5 +28,11 @@ public class LeaugeManager implements LeaugeManagerInterface {
     public List<League> findAllLeagues() {
         return repository.findAll();
     }
+
+    @Override
+    public List<League> findLeaguesByIds(List<Long> leagueIdList) { return repository.findAllById(leagueIdList); }
+
+    @Override
+    public List<Long> findLeagueIdsForUser(Long userId) { return repository.findLeaguesForUser(userId); }
 
 }

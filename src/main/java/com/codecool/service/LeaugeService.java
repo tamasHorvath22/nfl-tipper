@@ -9,9 +9,12 @@ import com.codecool.manager.UserManagerInterface;
 import com.codecool.model.League;
 import com.codecool.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @RestController
 public class LeaugeService {
@@ -27,17 +30,33 @@ public class LeaugeService {
         User user = userManager.findUserById(leagueDTO.getCreator().getId());
         League league = LeagueMapper.toEntity(leagueDTO);
         league.setCreator(user);
-        return LeagueMapper.toDto(leaugeManager.createLeague(league));
+        user.addToLeagueList(league);
+        LeagueDTO dtoToReturn = LeagueMapper.toDto(leaugeManager.createLeague(league));
+        userManager.createUser(user);
+        return dtoToReturn;
     }
 
     @PostMapping(path = "/join-league", headers = "Accept=application/json")
     public void joinLeague(@RequestBody JoinToLeagueDTO joinToLeagueDTO) {
-        League league = leaugeManager.findLeaugeById(joinToLeagueDTO.getLeagueId());
+        League league = leaugeManager.findLeagueById(joinToLeagueDTO.getLeagueId());
         User user = userManager.findUserById(joinToLeagueDTO.getUserId());
-//        league.addUserToMemberList(user);
         user.addToLeagueList(league);
-//        leaugeManager.createLeague(league);
         userManager.createUser(user);
-        System.out.println(user);
+    }
+
+    @GetMapping(path = "/get-leagues/{userId}")
+    public List<LeagueDTO> getLeagues(@PathVariable("userId") Long userId) {
+        List<Long> leagueIdList = leaugeManager.findLeagueIdsForUser(userId);
+        List<Long> x = new ArrayList<Long>();
+        for (int i = 0; i < leagueIdList.size(); i++) {
+//            System.out.println(leagueIdList.get(i).longValue());
+            x.add(leagueIdList.get(i).longValue());
+        }
+        List<League> leagueList = leaugeManager.findLeaguesByIds(x);
+        List<LeagueDTO> leagueDTOList = new ArrayList<>();
+        for (League league: leagueList) {
+            leagueDTOList.add(LeagueMapper.toDto(league));
+        }
+        return leagueDTOList;
     }
 }

@@ -27,9 +27,6 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
-    private Set<League> createdLeagues;
-
     @Override
     public String toString() {
         String user = "id: " + this.id + " username: " + this.username;
